@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {Suspense} from 'react';
+const OtherComponent = React.lazy(() => import ('./OtherComponent'));
 
 class App extends React.Component {
   state = {
-    c: 0
+    c: 0,
+    showOtherComponent: false,
   }
 
   componentDidMount() {
@@ -16,10 +18,21 @@ class App extends React.Component {
     });
   }
 
+  toggleOtherComponent = () => this.setState({showOtherComponent: !this.state.showOtherComponent});
+
   render() {
 
     return (
-        <div>Sum = {this.state.c}</div>
+        <div>
+          <div>Sum = {this.state.c}</div>
+          <button onClick={this.toggleOtherComponent}>Toggle other component</button>
+
+          {this.state.showOtherComponent && (
+              <Suspense fallback={<div>Загрузка...</div>}>
+                <OtherComponent/>
+              </Suspense>
+          )}
+        </div>
     );
   }
 }
